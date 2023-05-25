@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.3.1/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <script type="">
+
+    </script>
+    <title>Cobranza RCD</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="text-center">            
+            <img src="./img/logo-rcd.png" alt="Logo RCD" class="logo">
+        </div>
+        <h1 class="text-white text-center">Cobranza RCD</h1>
+        <div class="col-12 col-md-8 mx-auto">            
+            <div class="card-outline-white my-3">                                                
+                <h3 class="text-white font-weight-bold">Order Sumary</h3>
+                <input type="hidden" name="ordenId" id="ordenId" value="OPERACXC-15498-17861-I24">
+                <input type="hidden" name="nameClient" id="nameClient" value="nombre prueba">
+                <input type="hidden" name="phone" id="phone" value="1234567890">
+                <input type="hidden" name="email" id="email" value="gvera@rcdhotels.com">
+                <input type="hidden" name="subtotal" id="subtotal" value="0">
+                <input type="hidden" name="impuestos" id="impuestos" value="0">
+                <input type="hidden" name="concepto" id="concepto" value="RCDCXC">
+                <input type="hidden" name="urlReturn" id="urlReturn"> 
+                <input type="hidden" name="total" id="total" value="150">
+                <input type="hidden" name="mondea" id="moneda" value="USD">
+                <input type="hidden" id="_token" th:value="*{token}">
+                <div class="row mt-4">
+                    <div class="col-12 col-md-3 text-white font-weight-bold fisze-sm">Client Name:</div>
+                    <div class="col-12 col-md-7 text-white">--nombre del cliente--</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12 col-md-3 text-white font-weight-bold fisze-sm">Phone:</div>
+                    <div class="col-12 col-md-7 text-white">--1234567890--</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12 col-md-3 text-white font-weight-bold fisze-sm">Email:</div>
+                    <div class="col-12 col-md-7 text-white">mail@mai.com</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12 col-md-3 text-white font-weight-bold fisze-sm">Reference:</div>
+                    <div class="col-12 col-md-7 text-white">--cupones-123--</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12 col-md-3 text-white font-weight-bold fisze-sm">Amount:</div>
+                    <div class="col-12 col-md-7 text-white">$150</div>
+                </div>
+            </div>
+            <div class="card-outline-white my-3">
+                <div class="row">
+                    <div class="col-12 col-md-5">
+                        <h3 class="text-white font-weight-bold">Payment details</h3>
+                    </div>
+                    <div class="col-12 col-md-7 row justify-content-center">
+                        <img class="icono-method-pay" src="./img/amex.png" alt="amex">
+                        <img class="icono-method-pay" src="./img/diners.png" alt="diners">
+                        <img class="icono-method-pay" src="./img/jcb.png" alt="jcb">
+                        <img class="icono-method-pay" src="./img/maestro.png" alt="maestro">
+                        <img class="icono-method-pay" src="./img/mastercard.png" alt="mastercard">
+                        <img class="icono-method-pay" src="./img/visa.jpg" alt="visa">
+                    </div>
+                </div>                
+                <div class="form-group">
+                    <label for="nameHolder" class="text-white font-weight-bold">Cardholdes's name</label>
+                    <input class="form-control" type="text" name="nameHolder" id="nameHolder">
+                </div>
+                <div class="form-group">
+                    <label for="numberTarjet" class="text-white font-weight-bold">Card number</label>
+                    <input class="form-control" type="text" name="numberTarjet" id="numberTarjet">
+                </div>
+                <div class="row">
+                    <div class="form-group col-12 col-md-3">
+                        <label for="expiryMonth" class="text-white font-weight-bold">Expiry month</label>
+                        <!-- <input type="number" name="expiryMonth" id="expiryMonth" class="form-control" min="1" max="12"> -->
+                        <select name="expiryMonth" id="expiryMonth" class="form-control">
+                            <option value=""></option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-12 col-md-3">
+                        <label for="expiryYear" class="text-white font-weight-bold">Expiry year</label>
+                        <select class="form-control" name="expiryYear" id="expiryYear">
+                            <option value=""></option>
+                        </select>
+                        <!-- <input type="number" name="expiryYear" id="expiryYear" class="form-control" min="2023"> -->
+                    </div>
+                    <div class="form-group col-12 col-md-6">
+                        <label for="cvc" class="text-white font-weight-bold">Security code</label>
+                        <div class="row">
+                            <div class="col-6 col-md-6">
+                                <input type="text" name="cvc" id="cvc" class="form-control" min="1" max="12">
+                            </div>
+                            <div class="col-6 col-md-6">
+                                <img class="icono-method-pay" src="./img/pin-card.png" alt="Ping card">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-outline-white my-3">
+                <button id="btnGuardar" class="btn btn-success btn-lg btn-block mx-auto">Make Payment</button>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <hr style="background:white;" />
+        <footer>    
+            <p class="text-white ml-4">
+                &copy; 2023 - RCD Hotels
+            </p>
+        </footer>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/alerts.js"></script>
+    <script type="text/javascript">
+        var expiryYear = document.getElementById('expiryYear')
+        var fecha = new Date()
+
+        for(let i =0; i< 10; i++){
+            var year = fecha.getFullYear() + i
+            var opcion = `<option value="${year}">${year}</option>`
+            expiryYear.insertAdjacentHTML('beforeend', opcion)
+        }
+    </script>
+</body>
+</html>
