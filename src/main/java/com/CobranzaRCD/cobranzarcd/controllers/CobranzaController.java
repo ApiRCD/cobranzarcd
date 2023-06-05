@@ -15,19 +15,51 @@ import com.google.gson.Gson;
 import com.CobranzaRCD.cobranzarcd.clases.Silice;
 import com.CobranzaRCD.cobranzarcd.clases.Respuesta;
 import com.CobranzaRCD.cobranzarcd.clases.TarjetaTokenizada;
-import com.CobranzaRCD.cobranzarcd.clases.Cliente;
+import com.CobranzaRCD.cobranzarcd.cupones.interfaces.OrdenPagoInterface;
+import org.springframework.beans.factory.annotation.Autowired;
+// import com.CobranzaRCD.cobranzarcd.clases.Cliente;
 import com.CobranzaRCD.cobranzarcd.clases.OrdenPago;
-import com.CobranzaRCD.cobranzarcd.clases.DebitoDirecto;
+import com.CobranzaRCD.cobranzarcd.clases.DatosSilice;
+import lombok.RequiredArgsConstructor;
+// import com.CobranzaRCD.cobranzarcd.clases.DebitoDirecto;
 
-
+@RequiredArgsConstructor
 @RestController
 public class CobranzaController {
+    
+    @Autowired
+    private OrdenPagoInterface ordenpagointerface;
+
     @RequestMapping(value = "")
     public ModelAndView home(@RequestParam String modulo, @RequestParam String reference)
     {
-        ModelAndView vista = new ModelAndView("IndexCobranza");
-        UUID uuid = UUID.randomUUID();
-        vista.addObject("token", uuid.toString());
+        ModelAndView vista = new ModelAndView("nofound");        
+
+        if(!modulo.equals("") || !reference.equals(""))        
+        {            
+            OrdenPago ordenpago = new OrdenPago();
+            switch(modulo)
+            {
+                case "CUPONES":
+                    ordenpago = ordenpagointerface.ObtenerCupon(Integer.parseInt(reference));
+                    ordenpago.sistema = modulo;                    
+                    break;
+                default:
+                    break;
+            }
+
+            if(ordenpago.ordenId != null)
+            {
+                vista = new ModelAndView("IndexCobranza");
+                UUID uuid = UUID.randomUUID();
+                vista.addObject("token", uuid.toString());    
+                vista.addObject("ordenpago", ordenpago);
+            }
+            else
+            {
+                vista = new ModelAndView("nofound");
+            }
+        }
         
         return vista;
     }
@@ -75,25 +107,62 @@ public class CobranzaController {
                 card = jsonobjtar.getString("token");
 
                 OrdenPago orden = gson.fromJson(OrdenPago, OrdenPago.class);
-                String ordenjson = gson.toJson(orden);
-                resp = silice.CrearOrdenPago(ordenjson);
+                orden.items = ordenpagointerface.ObtenerDetalleCupon(Integer.parseInt(orden.ordenId));
 
-                if(resp.error == false)
+                if(orden.items.size() > 0)
                 {
-                    //      EJEMPLO RESPUESTA ORDEN DE PAGO
-                    //  "{"url":"https://qa.upayment.app//orden/t8TvUorTjMRN","sessionId":"t8TvUorTjMRN","reciboId":"646bdba3eed446f7e438516d"}"
-                    JSONObject jsonobj2 = new JSONObject(resp.data);
-                    ordenid = jsonobj2.getString("reciboId");                    
-                    
-                    //      PENDIENTE REALIZAR COBRO CAMBIAR EL IDPRODUCTO
-                    //String jsondebito = gson.toJson(debito);
-                    String jsondebito = "{\"card\": {\"token\":\""+card+"\"},\"order\": {\"reciboId\": \""+ordenid+"\"}}";
-                    resp = silice.CobroDebitoDirecto(jsondebito);                    
+                    String ordenjson = gson.toJson(orden);
+                    resp = silice.CrearOrdenPago(ordenjson);
+    
+                    if(resp.error == false)
+                    {
+                        //      EJEMPLO RESPUESTA ORDEN DE PAGO
+                        //  "{"url":"https://qa.upayment.app//orden/t8TvUorTjMRN","sessionId":"t8TvUorTjMRN","reciboId":"646bdba3eed446f7e438516d"}"
+                        JSONObject jsonobj2 = new JSONObject(resp.data);
+                        ordenid = jsonobj2.getString("reciboId");                    
+                                                
+                        //String jsondebito = gson.toJson(debito);
+                        String jsondebito = "{\"card\": {\"token\":\""+card+"\"},\"order\": {\"reciboId\": \""+ordenid+"\"}}";
+                        resp = silice.CobroDebitoDirecto(jsondebito);    
+                        
+                        if(resp.error == false)                        
+                        {
+                            DatosSilice datossilice = new DatosSilice();
+                            
+                            datossilice.setIDREGISTRO(Integer.parseInt(orden.ordenId));
+                            datossilice.setSISTEMA(orden.sistema);
+                            datossilice.setTOKENTARJETA(card);
+                            datossilice.setCOMPANY("");
+                            datossilice.setNUMCONFIRM("");
+                            datossilice.setNUMRESERVATION("");
+                            datossilice.setIDHOTEL(orden.items.get(0).propiedad);
+
+                            Respuesta respguardado = ordenpagointerface.GuardarDatosSilice(datossilice);
+                            resp.error = respguardado.error;
+                            resp.mensaje = respguardado.mensaje;
+                        }
+
+                        
+                        
+
+
+
+
+
+
+
+                    }
+                    else
+                    {
+                        resp.mensaje = "No se pudo generar la orden de pago";
+                    }
                 }
                 else
                 {
-                    resp.mensaje = "No se pudo generar la orden de pago";
+                    resp.error = true;
+                    resp.mensaje = "No se puo generar el detalle de la orden de pago";
                 }
+
             }
             else
             {
@@ -109,58 +178,70 @@ public class CobranzaController {
         return resp;
     }
 
-
-
-
-
-
-
-
-
-
-    @RequestMapping(value = "tokenizartarjeta", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Respuesta TokenizarTarjeta(@RequestParam String data0, @RequestParam String email, @RequestParam String name, @RequestParam String phone)    
+    @RequestMapping(value = "gracias")
+    public ModelAndView gracias()
     {
-        Respuesta resp = new Respuesta();
-        try{
-            Gson gson = new Gson();
-            Silice silice = new Silice();
-            TarjetaTokenizada tk = new TarjetaTokenizada();
-            Cliente client = new Cliente();
-            client.name = name;
-            client.email = email;
-            client.phone = phone;
-            tk.data0 = data0;
-            tk.client = client;
-            String jsonparse = gson.toJson(tk);
+        ModelAndView vista = new ModelAndView("gracias");
 
-            resp = silice.TokenizarTarjeta(jsonparse);            
-        }
-        catch(Exception e)
-        {
-            resp.error = true;
-            resp.mensaje = e.getMessage();
-        }
-        return resp;
+        return vista;
+    }
+    @RequestMapping(value = "no-foud")
+    public ModelAndView nofound()
+    {
+        ModelAndView vista = new ModelAndView("nofound");
+
+        return vista;
     }
 
-    @RequestMapping(value = "generarlinkpago", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Respuesta ConsultaPrueba(@RequestParam String objson)    
-    {
-        Respuesta resp = new Respuesta();
-        Silice silice = new Silice();
-        Gson gson = new Gson();
-        try{
-            OrdenPago orden = gson.fromJson(objson, OrdenPago.class);
-            String ordenjson = gson.toJson(orden);
-            resp = silice.CrearOrdenPago(ordenjson);
-        }
-        catch(Exception e)
-        {
-            resp.error = true;
-            resp.mensaje = e.getMessage();
-        }
 
-        return resp;
-    }
+
+
+
+
+
+    // @RequestMapping(value = "tokenizartarjeta", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    // public Respuesta TokenizarTarjeta(@RequestParam String data0, @RequestParam String email, @RequestParam String name, @RequestParam String phone)    
+    // {
+    //     Respuesta resp = new Respuesta();
+    //     try{
+    //         Gson gson = new Gson();
+    //         Silice silice = new Silice();
+    //         TarjetaTokenizada tk = new TarjetaTokenizada();
+    //         Cliente client = new Cliente();
+    //         client.name = name;
+    //         client.email = email;
+    //         client.phone = phone;
+    //         tk.data0 = data0;
+    //         tk.client = client;
+    //         String jsonparse = gson.toJson(tk);
+
+    //         resp = silice.TokenizarTarjeta(jsonparse);            
+    //     }
+    //     catch(Exception e)
+    //     {
+    //         resp.error = true;
+    //         resp.mensaje = e.getMessage();
+    //     }
+    //     return resp;
+    // }
+
+    // @RequestMapping(value = "generarlinkpago", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    // public Respuesta ConsultaPrueba(@RequestParam String objson)    
+    // {
+    //     Respuesta resp = new Respuesta();
+    //     Silice silice = new Silice();
+    //     Gson gson = new Gson();
+    //     try{
+    //         OrdenPago orden = gson.fromJson(objson, OrdenPago.class);
+    //         String ordenjson = gson.toJson(orden);
+    //         resp = silice.CrearOrdenPago(ordenjson);
+    //     }
+    //     catch(Exception e)
+    //     {
+    //         resp.error = true;
+    //         resp.mensaje = e.getMessage();
+    //     }
+
+    //     return resp;
+    // }
 }

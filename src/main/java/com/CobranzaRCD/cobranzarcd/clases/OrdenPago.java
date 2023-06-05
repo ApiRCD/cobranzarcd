@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class OrdenPago {
     public String ordenId;
+    public String folio;
     public String nombreCliente;
     public String telefonoCliente;
     public String subtotal;
@@ -14,12 +15,7 @@ public class OrdenPago {
     public String emailCliente;
     public String documentoCliente;
     public String tipoDocumentoCliente;
-    public ArrayList<Items> items;
-}
+    public ArrayList<OrdenPagoDet> items;
 
-class Items{
-    public int cantidad;
-    public String producto;
-    public double precio;
-    public String moneda;
+    public String sistema;
 }

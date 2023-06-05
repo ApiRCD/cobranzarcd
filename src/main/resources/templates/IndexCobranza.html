@@ -20,36 +20,37 @@
         <div class="col-12 col-md-8 mx-auto">            
             <div class="card-outline-white my-3">                                                
                 <h3 class="text-white font-weight-bold">Order Sumary</h3>
-                <input type="hidden" name="ordenId" id="ordenId" value="OPERACXC-15498-17861-I24">
-                <input type="hidden" name="nameClient" id="nameClient" value="nombre prueba">
-                <input type="hidden" name="phone" id="phone" value="1234567890">
-                <input type="hidden" name="email" id="email" value="gvera@rcdhotels.com">
+                <input type="hidden" name="ordenId" id="ordenId" th:value="*{ordenpago.ordenId}">
+                <input type="hidden" name="nameClient" id="nameClient" th:value="*{ordenpago.nombreCliente}">
+                <input type="hidden" name="phone" id="phone" th:value="*{ordenpago.telefonoCliente}">
+                <input type="hidden" name="email" id="email" th:value="*{ordenpago.emailCliente}">
                 <input type="hidden" name="subtotal" id="subtotal" value="0">
                 <input type="hidden" name="impuestos" id="impuestos" value="0">
-                <input type="hidden" name="concepto" id="concepto" value="RCDCXC">
+                <input type="hidden" name="concepto" id="concepto" th:value="*{ordenpago.concepto}">
                 <input type="hidden" name="urlReturn" id="urlReturn"> 
-                <input type="hidden" name="total" id="total" value="150">
-                <input type="hidden" name="mondea" id="moneda" value="USD">
+                <input type="hidden" name="sistema" id="sistema" th:value="*{ordenpago.sistema}">
+                <input type="hidden" name="total" id="total" th:value="*{ordenpago.total}">
+                <!-- <input type="hidden" name="mondea" id="moneda" value="USD"> -->
                 <input type="hidden" id="_token" th:value="*{token}">
                 <div class="row mt-4">
                     <div class="col-12 col-md-3 text-white font-weight-bold fisze-sm">Client Name:</div>
-                    <div class="col-12 col-md-7 text-white">--nombre del cliente--</div>
+                    <div class="col-12 col-md-7 text-white" th:text="*{ordenpago.nombreCliente}"></div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-12 col-md-3 text-white font-weight-bold fisze-sm">Phone:</div>
-                    <div class="col-12 col-md-7 text-white">--1234567890--</div>
+                    <div class="col-12 col-md-7 text-white" th:text="*{ordenpago.telefonoCliente}"></div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-12 col-md-3 text-white font-weight-bold fisze-sm">Email:</div>
-                    <div class="col-12 col-md-7 text-white">mail@mai.com</div>
+                    <div class="col-12 col-md-7 text-white" th:text="*{ordenpago.emailCliente}"></div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-12 col-md-3 text-white font-weight-bold fisze-sm">Reference:</div>
-                    <div class="col-12 col-md-7 text-white">--cupones-123--</div>
+                    <div class="col-12 col-md-7 text-white" th:text="*{ordenpago.folio}"></div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-12 col-md-3 text-white font-weight-bold fisze-sm">Amount:</div>
-                    <div class="col-12 col-md-7 text-white">$150</div>
+                    <div class="col-12 col-md-7 text-white">$ <span th:text="*{ordenpago.total}"></span></div>
                 </div>
             </div>
             <div class="card-outline-white my-3">

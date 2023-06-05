@@ -9,41 +9,41 @@ $('#btnGuardar').click(function(){
     CifradoDatos()    
 })
 
-function GenerarLigaPago(){
+// function GenerarLigaPago(){
 
-    var objOrdenPago = {
-        ordenId: $('#ordenId').val(),
-        nombreCliente: $('#nameClient').val(),
-        telefonoCliente: $('#phone').val(),
-        subtotal: $('#subtotal').val(),
-        impuestos: $('#impuestos').val(),
-        total: $('#total').val(),
-        concepto: $('#concepto').val(),
-        emailCliente: $('#email').val(),
-        documentoCliente: "0",
-        tipoDocumentoCliente: "0",
-        urlReturn: window.location.origin,
-        items: [{
-            "cantidad": 1,
-            "producto": " - MASCOTAS - PAGO ÚNICO -SILICE",
-            "precio": 21000,
-            "moneda": "USD"
-        }]
-    }
+//     var objOrdenPago = {
+//         ordenId: $('#ordenId').val(),
+//         nombreCliente: $('#nameClient').val(),
+//         telefonoCliente: $('#phone').val(),
+//         subtotal: $('#subtotal').val(),
+//         impuestos: $('#impuestos').val(),
+//         total: $('#total').val(),
+//         concepto: $('#concepto').val(),
+//         emailCliente: $('#email').val(),
+//         documentoCliente: "0",
+//         tipoDocumentoCliente: "0",
+//         urlReturn: window.location.origin,
+//         items: [{
+//             "cantidad": 1,
+//             "producto": " - MASCOTAS - PAGO ÚNICO -SILICE",
+//             "precio": 21000,
+//             "moneda": "USD"
+//         }]
+//     }
 
-    $.ajax({
-        url: '/generarlinkpago',
-        type: 'POST',
-        data: {
-            objson: JSON.stringify(objOrdenPago)
-        },        
-        success: function(data)
-        {
-            console.log(data)
-        }
-    });
+//     $.ajax({
+//         url: '/generarlinkpago',
+//         type: 'POST',
+//         data: {
+//             objson: JSON.stringify(objOrdenPago)
+//         },        
+//         success: function(data)
+//         {
+//             console.log(data)
+//         }
+//     });
     
-}
+// }
 
 
 function CifradoDatos(){    
@@ -103,16 +103,17 @@ function CifradoDatos(){
         documentoCliente: "0",
         tipoDocumentoCliente: "0",
         urlReturn: window.location.origin,
-        items: [{
-            "cantidad": 1,
-            "producto": " - MASCOTAS - PAGO ÚNICO -SILICE",
-            "precio": 21000,
-            "moneda": "USD"
-        }]
+        sistema: $('#sistema').val()
+        // items: [{
+        //     "cantidad": 1,
+        //     "producto": " - MASCOTAS - PAGO ÚNICO -SILICE",
+        //     "precio": 21000,
+        //     "moneda": "USD"
+        // }]
     }
 
     activeLoader('Procesando..', 'No recargue o actualize la pagina mienstras se procesa su pago.')   
-
+console.log(objOrdenPago)
     var reciboId = "";
     var tarjetaTokenizada = "";    
 
@@ -160,6 +161,9 @@ function CifradoDatos(){
                                 if(resp.status == true)
                                 {
                                     successAlert("Hecho", "Cobro realizado correctamente")
+                                    setTimeout(function(){
+                                        window.location.href = '/gracias'
+                                    },2000)
                                 }
                                 else
                                 {
