@@ -6,7 +6,7 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "CUPON")
+@Table(name = "CUPON", schema = "Cupones")
 @Data
 public class CUPON {
     @Id
@@ -45,4 +45,6 @@ public class CUPON {
     private int EDAD;
     private String LUGARVENTA;
     private String SALAVENTA;
+    private String CONOMBRE;
+    private String COAPELLIDO;
 }

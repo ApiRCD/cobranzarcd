@@ -173,7 +173,8 @@ console.log(objOrdenPago)
                             else
                             {
                                 setTimeout(function(){
-                                    errorAlert("Error",data.data)
+                                    errorAlert("Error",data.mensaje)
+                                    console.log(data.data)
                                 },10)
                             }
                         }

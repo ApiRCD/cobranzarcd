@@ -16,4 +16,7 @@ public class DatosSilice {
     private String NUMCONFIRM;
     private String NUMRESERVATION;
     private String IDHOTEL;
+    private String CARDNUMBER;
+    private String CARDTYPE;
+    private String TRANSACTIONID;
 }

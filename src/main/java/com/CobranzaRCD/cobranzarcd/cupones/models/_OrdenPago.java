@@ -6,7 +6,7 @@ import com.CobranzaRCD.cobranzarcd.clases.Respuesta;
 import com.CobranzaRCD.cobranzarcd.clases.OrdenPagoDet;
 import com.CobranzaRCD.cobranzarcd.cupones.clases.CUPON;
 import com.CobranzaRCD.cobranzarcd.cupones.clases.CUPONDET;
-import com.CobranzaRCD.cobranzarcd.cupones.interfaces.OrdenPagoInterface;
+import com.CobranzaRCD.cobranzarcd.cupones.interfaces.OrdenPagoCuponInterface;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 @Repository
 @Transactional
-public class _OrdenPago implements OrdenPagoInterface{
+public class _OrdenPago implements OrdenPagoCuponInterface{
 
     @PersistenceContext
     private EntityManager entitymanager;
@@ -50,7 +50,6 @@ public class _OrdenPago implements OrdenPagoInterface{
 
         return ordenpago;
     }
-
     public ArrayList<OrdenPagoDet> ObtenerDetalleCupon(int id)
     {
         ArrayList<OrdenPagoDet> detalle = new ArrayList<>();
@@ -90,6 +89,7 @@ public class _OrdenPago implements OrdenPagoInterface{
         {
             resp.error = true;
             resp.mensaje = e.getMessage();
+            System.err.println(e.getMessage());
         }
 
         return resp;
